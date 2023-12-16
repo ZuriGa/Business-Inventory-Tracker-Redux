@@ -3,6 +3,9 @@ import NewInventoryForm from './NewInventoryForm';
 import InventoryList from './InventoryList';
 import InventoryDetails from './InventoryDetails';
 import EditInventoryForm from './EditInventoryForm';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 
 const coffeeInventory = [
     {
@@ -11,7 +14,7 @@ const coffeeInventory = [
         price: '$17.00',
         roast: 'Light roast',
         size: '1 lb',
-        flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.' ,
+        flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.',
         poundsLeft: 130,
         id: '1'
 
@@ -42,19 +45,28 @@ class InventoryControl extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            formVisibleOnPage: false,
+            // formVisibleOnPage: false,
             selectedInventoryItem: null,
-            mainCoffeeList: coffeeInventory,
+            // mainCoffeeList: coffeeInventory,
             editing: false,
         };
     }
 
     handleAddingNewInventoryToList = (newCoffee) => {
-        const newInventory = this.state.mainCoffeeList.concat(newCoffee);
-        this.setState({
-            mainCoffeeList: newInventory,
-            formVisibleOnPage: false
-        });
+        const { dispatch } = this.props;
+        const { name, origin, price, roast, size, flavor, poundsLeft, id } = newCoffee;
+        const action = {
+            type: 'ADD_INVENTORY',
+            name: name,
+            origin: origin,
+            price: price,
+            roast: roast,
+            size: size,
+            flavor: flavor,
+            poundsLeft: poundsLeft,
+        }
+        dispatch(action);
+        this.setState({ formVisibleOnPage: false });
     }
 
     handleClick = () => {
@@ -72,26 +84,40 @@ class InventoryControl extends React.Component {
         }
     }
 
-    handleEditingCoffeeInList = () => {
-    this.setState({
-        editing: true,
-    });
-
+    handleEditingCoffeeInList = (coffeeToEdit) => {
+        const { dispatch } = this.props;
+        const { name, origin, price, roast, size, flavor, poundsLeft, id } = coffeeToEdit;
+        const action = {
+            type: 'ADD_INVENTORY',
+            name: name,
+            origin: origin,
+            price: price,
+            roast: roast,
+            size: size,
+            flavor: flavor,
+            poundsLeft: poundsLeft,
+        }
+        dispatch(action);
+        this.setState({
+            editing: false,
+            selectedCoffee: null
+        });
     }
+
 
     handleUpdatingCoffeeList = (updatedCoffee) => {
         const updatedMainCoffeeList = this.state.mainCoffeeList.map((coffee) =>
-        coffee.id === updatedCoffee.id ? updatedCoffee: coffee
+            coffee.id === updatedCoffee.id ? updatedCoffee : coffee
         );
         this.setState({
             mainCoffeeList: updatedMainCoffeeList,
-            editing: false, 
+            editing: false,
             selectedInventoryItem: null,
         });
     }
 
     handleChangingSelectedCoffee = (id) => {
-        const selectedCoffee = this.state.mainCoffeeList.find((coffee) => coffee.id === id);
+        const selectedCoffee = this.props.mainCoffeeList[id];
         this.setState({ selectedInventoryItem: selectedCoffee });
     }
 
@@ -113,11 +139,13 @@ class InventoryControl extends React.Component {
     }
 
     handleDeletingCoffee = (id) => {
-        const newMainCoffeeList = this.state.mainCoffeeList.filter((coffee) => coffee.id !== id);
-        this.setState({
-            mainCoffeeList: newMainCoffeeList,
-            selectedCoffee: null
-        });
+        const { dispatch } = this.props;
+        const action = {
+            type: 'DELETE_INVENTORY',
+            id: id
+        }
+        dispatch(action);
+        this.setState({selectedCoffee: null});
     }
 
 
@@ -126,35 +154,47 @@ class InventoryControl extends React.Component {
         let buttonText = null;
 
         if (this.state.editing) {
-            currentlyVisibleState = <EditInventoryForm coffee = {this.state.selectedInventoryItem} 
-            onEditCoffee = {this.handleUpdatingCoffeeList} />
+            currentlyVisibleState = <EditInventoryForm coffee={this.state.selectedInventoryItem}
+                onEditCoffee={this.handleUpdatingCoffeeList} />
             buttonText = 'Return to List';
         } else if (this.state.selectedInventoryItem !== null) {
             currentlyVisibleState = <InventoryDetails coffee={this.state.selectedInventoryItem}
-            onSellPound={this.handleSellCoffee}
-            onClickingDelete = {this.handleDeletingCoffee} 
-            onClickingEdit = {this.handleEditingCoffeeInList}/>
+                onSellPound={this.handleSellCoffee}
+                onClickingDelete={this.handleDeletingCoffee}
+                onClickingEdit={this.handleEditingCoffeeInList} />
             buttonText = 'Return to List';
-        } else if (this.state.formVisibleOnPage) {
-            currentlyVisibleState = <NewInventoryForm onNewInventoryCreation={this.handleAddingNewInventoryToList} />;
+        } else if (this.props.formVisibleOnPage) {
+            currentlyVisibleState = <NewInventoryForm onNewInventoryCreation={this.handleAddingNewInventoryToList} />
             buttonText = 'Return to List';
         } else {
             currentlyVisibleState =
                 <InventoryList
-                    inventoryList={this.state.mainCoffeeList}
-                    onCoffeeSelection={this.handleChangingSelectedCoffee} />;
-                    buttonText = 'Add New Coffee';
+                    inventoryList={this.props.mainCoffeeList}
+                    onCoffeeSelection={this.handleChangingSelectedCoffee} />
+            buttonText = 'Add New Coffee';
         }
 
         return (
             <React.Fragment>
                 {currentlyVisibleState}
-                
+
                 <button onClick={this.handleClick}>{buttonText}</button>
             </React.Fragment>
         );
     }
 }
+
+InventoryControl.propTypes = {
+    mainCoffeeList: PropTypes.array
+};
+
+const mapStateToProps = state => {
+    return {
+        mainCoffeeList: state.mainCoffeeList,
+    }
+}
+
+InventoryControl = connect(mapStateToProps)(InventoryControl);
 
 
 export default InventoryControl;
