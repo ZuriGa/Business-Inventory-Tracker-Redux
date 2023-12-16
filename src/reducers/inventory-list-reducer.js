@@ -14,10 +14,10 @@ const reducer =(state = {}, action) => {
                     id: id
                 }
             });
-            // case 'DELETE_INVENTORY':
-            //     let newState = { ...state };
-            //     delete newState[id];
-            //     return newState;
+            case 'DELETE_INVENTORY':
+                let newState = { ...state };
+                delete newState[id];
+                return newState;
         default:
             return state;
     }
