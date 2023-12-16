@@ -13,7 +13,7 @@ const coffeeInventory = [
         size: '1 lb',
         flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.' ,
         poundsLeft: 130,
-        id: '0'
+        id: '1'
 
     },
     {
@@ -24,7 +24,7 @@ const coffeeInventory = [
         size: '1 lb',
         flavor: 'Our Organic House blend balances mild acidity, medium body, and walnut flavor notes in perfect harmony.',
         poundsLeft: 130,
-        id: '1'
+        id: '2'
     },
     {
         name: 'Espresso Roast',
