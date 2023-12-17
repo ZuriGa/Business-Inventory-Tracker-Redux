@@ -13,4 +13,27 @@ describe('Coffee inventory actions', () => {
             type: 'TOGGLE_FORM'
         });
     });
+
+    it('addInventory should create ADD_INVENTORY action', () => {
+        expect(actions.addInventory({
+            name: 'Light City',
+            origin: 'Costa Rica',
+            price: '$17.00',
+            roast: 'Light roast',
+            size: '1 lb',
+            flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.',
+            poundsLeft: 130,
+            id: '1'
+        })).toEqual({
+            type: 'ADD_INVENTORY',
+            name: 'Light City',
+            origin: 'Costa Rica',
+            price: '$17.00',
+            roast: 'Light roast',
+            size: '1 lb',
+            flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.',
+            poundsLeft: 130,
+            id: '1'
+        });
+    });
 });
