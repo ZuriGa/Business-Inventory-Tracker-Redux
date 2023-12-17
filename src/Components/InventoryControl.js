@@ -45,9 +45,7 @@ class InventoryControl extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // formVisibleOnPage: false,
             selectedInventoryItem: null,
-            // mainCoffeeList: coffeeInventory,
             editing: false,
         };
     }
@@ -66,21 +64,24 @@ class InventoryControl extends React.Component {
             poundsLeft: poundsLeft,
         }
         dispatch(action);
-        this.setState({ formVisibleOnPage: false });
+        const action2 = {
+            type: 'TOGGLE_FORM'
+        }
+        dispatch(action2);
     }
 
     handleClick = () => {
         if (this.state.selectedInventoryItem !== null) {
             this.setState({
-                formVisibleOnPage: false,
                 selectedInventoryItem: null,
                 editing: false,
             });
         } else {
-            this.setState((prevState) => ({
-                formVisibleOnPage: !prevState.formVisibleOnPage,
-                editing: false,
-            }));
+            const { dispatch } = this.props;
+            const action = {
+                type: 'TOGGLE_FORM'
+            }
+            dispatch(action);
         }
     }
 
@@ -185,12 +186,14 @@ class InventoryControl extends React.Component {
 }
 
 InventoryControl.propTypes = {
-    mainCoffeeList: PropTypes.array
+    mainCoffeeList: PropTypes.array,
+    formVisibleOnPage: PropTypes.bool
 };
 
 const mapStateToProps = state => {
     return {
         mainCoffeeList: state.mainCoffeeList,
+        formVisibleOnPage: state.formVisibleOnPage
     }
 }
 
