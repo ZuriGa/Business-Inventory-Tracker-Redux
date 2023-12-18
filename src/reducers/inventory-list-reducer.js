@@ -1,23 +1,27 @@
-const reducer =(state = {}, action) => {
-    const { name, origin, price, roast, size, flavor, poundsLeft, id } = action;
+import * as c from './../actions/ActionTypes';
+
+const reducer =(state = [], action) => {
+    const { name, origin, price, roast, flavor, poundsLeft, id } = action;
     switch (action.type) {
-        case 'ADD_INVENTORY':
-            return Object.assign({}, state, {
-                [id]: {
+        case c.ADD_INVENTORY:
+            return [
+            ...state,  
+            // Object.assign({}, state, {
+        
+                {
                     name: name, 
                     origin: origin,
                     price: price,
                     roast: roast,
-                    size: size,
                     flavor: flavor,
                     poundsLeft: poundsLeft,
                     id: id
-                }
-            });
-            case 'DELETE_INVENTORY':
-                let newState = { ...state };
-                delete newState[id];
-                return newState;
+                },
+            ];
+            case c.DELETE_INVENTORY:
+                // let newState = { ...state };
+                // delete newState[id];
+                return state.filter(coffee => coffee.id !== id);
         default:
             return state;
     }

@@ -3,8 +3,10 @@ import NewInventoryForm from './NewInventoryForm';
 import InventoryList from './InventoryList';
 import InventoryDetails from './InventoryDetails';
 import EditInventoryForm from './EditInventoryForm';
+import { v4 } from 'uuid';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as a from './../actions';
 
 
 const coffeeInventory = [
@@ -13,10 +15,9 @@ const coffeeInventory = [
         origin: 'Costa Rica',
         price: '$17.00',
         roast: 'Light roast',
-        size: '1 lb',
-        flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.',
+        flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.' ,
         poundsLeft: 130,
-        id: '1'
+        id: '0'
 
     },
     {
@@ -24,17 +25,15 @@ const coffeeInventory = [
         origin: 'Guatemala',
         price: '$19.00',
         roast: 'Medium roast',
-        size: '1 lb',
         flavor: 'Our Organic House blend balances mild acidity, medium body, and walnut flavor notes in perfect harmony.',
         poundsLeft: 130,
-        id: '2'
+        id: '1'
     },
     {
         name: 'Espresso Roast',
         origin: 'Colombia',
         price: '$18.00',
         roast: 'Dark roast',
-        size: '1 lb',
         flavor: 'Our Espresso Roast blend has a big, heavy body that acts as a foundation for its earthy, sweet flavors and complex finish.',
         poundsLeft: 130,
         id: '2'
@@ -52,16 +51,16 @@ class InventoryControl extends React.Component {
 
     handleAddingNewInventoryToList = (newCoffee) => {
         const { dispatch } = this.props;
-        const { name, origin, price, roast, size, flavor, poundsLeft, id } = newCoffee;
+        const { name, origin, price, roast, flavor, poundsLeft, id } = newCoffee;
         const action = {
             type: 'ADD_INVENTORY',
             name: name,
             origin: origin,
             price: price,
             roast: roast,
-            size: size,
             flavor: flavor,
-            poundsLeft: poundsLeft,
+            poundsLeft: newCoffee.quantity,
+            id: v4()
         }
         dispatch(action);
         const action2 = {
@@ -71,82 +70,65 @@ class InventoryControl extends React.Component {
     }
 
     handleClick = () => {
-        if (this.state.selectedInventoryItem !== null) {
+        if (this.state.selectedInventoryItem != null) {
             this.setState({
                 selectedInventoryItem: null,
                 editing: false,
             });
         } else {
             const { dispatch } = this.props;
-            const action = {
-                type: 'TOGGLE_FORM'
-            }
+            const action = a.toggleForm();
             dispatch(action);
         }
     }
 
     handleEditingCoffeeInList = (coffeeToEdit) => {
         const { dispatch } = this.props;
-        const { name, origin, price, roast, size, flavor, poundsLeft, id } = coffeeToEdit;
-        const action = {
-            type: 'ADD_INVENTORY',
-            name: name,
-            origin: origin,
-            price: price,
-            roast: roast,
-            size: size,
-            flavor: flavor,
-            poundsLeft: poundsLeft,
-        }
+        const action = a.addInventory(coffeeToEdit);
         dispatch(action);
+        const action2 = a.toggleForm();
+        dispatch(action2);
         this.setState({
             editing: false,
             selectedCoffee: null
         });
     }
 
-
     handleUpdatingCoffeeList = (updatedCoffee) => {
-        const updatedMainCoffeeList = this.state.mainCoffeeList.map((coffee) =>
-            coffee.id === updatedCoffee.id ? updatedCoffee : coffee
-        );
+        const {dispatch} = this.props;
+        const action = a.addInventory(updatedCoffee);
+        dispatch(action);
+
         this.setState({
-            mainCoffeeList: updatedMainCoffeeList,
-            editing: false,
+            editing: false, 
             selectedInventoryItem: null,
         });
     }
 
     handleChangingSelectedCoffee = (id) => {
-        const selectedCoffee = this.props.mainCoffeeList[id];
+        const selectedCoffee = this.props.mainCoffeeList.find((coffee) => coffee.id === id);
         this.setState({ selectedInventoryItem: selectedCoffee });
     }
 
     handleSellCoffee = () => {
-        const { selectedInventoryItem, mainCoffeeList } = this.state;
-        const updatedInventory = mainCoffeeList.map((coffee) => {
-            if (coffee.id === selectedInventoryItem.id) {
-                return { ...coffee, poundsLeft: Math.max(0, coffee.poundsLeft - 1) };
-            } else {
-                return coffee;
-            }
-        });
-        const updatedPoundsLeft = Math.max(0, selectedInventoryItem.poundsLeft - 1);
+        const { selectedInventoryItem, dispatch } = this.props;
 
-        this.setState({
-            mainCoffeeList: updatedInventory,
-            selectedInventoryItem: { ...selectedInventoryItem, poundsLeft: updatedPoundsLeft },
-        });
+        if (selectedInventoryItem && selectedInventoryItem.poundsLeft > 0) {
+            const updatedCoffee = { ...selectedInventoryItem, poundsLeft: selectedInventoryItem.poundsLeft - 1 };
+            const action = a.addInventory(updatedCoffee);
+            dispatch(action);
+        }
     }
+    
+    
 
     handleDeletingCoffee = (id) => {
         const { dispatch } = this.props;
-        const action = {
-            type: 'DELETE_INVENTORY',
-            id: id
-        }
+        const action = a.deleteInventory(id);
         dispatch(action);
-        this.setState({selectedCoffee: null});
+        this.setState({
+            selectedCoffee: null
+        });
     }
 
 
@@ -155,30 +137,30 @@ class InventoryControl extends React.Component {
         let buttonText = null;
 
         if (this.state.editing) {
-            currentlyVisibleState = <EditInventoryForm coffee={this.state.selectedInventoryItem}
-                onEditCoffee={this.handleUpdatingCoffeeList} />
+            currentlyVisibleState = <EditInventoryForm coffee = {this.state.selectedInventoryItem} 
+            onEditCoffee = {this.handleUpdatingCoffeeList} />
             buttonText = 'Return to List';
         } else if (this.state.selectedInventoryItem !== null) {
             currentlyVisibleState = <InventoryDetails coffee={this.state.selectedInventoryItem}
-                onSellPound={this.handleSellCoffee}
-                onClickingDelete={this.handleDeletingCoffee}
-                onClickingEdit={this.handleEditingCoffeeInList} />
+            onSellPound={this.handleSellCoffee}
+            onClickingDelete = {this.handleDeletingCoffee} 
+            onClickingEdit = {this.handleEditingCoffeeInList}/>
             buttonText = 'Return to List';
         } else if (this.props.formVisibleOnPage) {
-            currentlyVisibleState = <NewInventoryForm onNewInventoryCreation={this.handleAddingNewInventoryToList} />
+            currentlyVisibleState = <NewInventoryForm onNewInventoryCreation={this.handleAddingNewInventoryToList} />;
             buttonText = 'Return to List';
         } else {
             currentlyVisibleState =
                 <InventoryList
                     inventoryList={this.props.mainCoffeeList}
-                    onCoffeeSelection={this.handleChangingSelectedCoffee} />
-            buttonText = 'Add New Coffee';
+                    onCoffeeSelection={this.handleChangingSelectedCoffee} />;
+                    buttonText = 'Add New Coffee';
         }
 
         return (
             <React.Fragment>
                 {currentlyVisibleState}
-
+                
                 <button onClick={this.handleClick}>{buttonText}</button>
             </React.Fragment>
         );
@@ -190,14 +172,14 @@ InventoryControl.propTypes = {
     formVisibleOnPage: PropTypes.bool
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         mainCoffeeList: state.mainCoffeeList,
         formVisibleOnPage: state.formVisibleOnPage
+        
     }
 }
 
 InventoryControl = connect(mapStateToProps)(InventoryControl);
-
 
 export default InventoryControl;

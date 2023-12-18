@@ -1,7 +1,7 @@
 import React from 'react';
 import coffeeBeansImg from './../Img/coffeeBeans.png';
 
-function Header({ onHomeClick }) {
+function Header() {
     return(
         <React.Fragment>
             <h1>Lucky Cat Coffee Co.</h1>

@@ -1,21 +1,22 @@
+import * as c from './ActionTypes';
+
 export const deleteInventory = id => ({
-    type: 'DELETE_INVENTORY',
+    type: c.DELETE_INVENTORY,
     id
 });
 
 export const toggleForm = () => ({
-    type: 'TOGGLE_FORM'
+    type: c.TOGGLE_FORM
 });
 
-export const addInventory = (coffee) => {
-    const { name, origin, price, roast, size, flavor, poundsLeft, id } = coffee;
+export const addInventory = (newCoffee) => {
+    const { name, origin, price, roast, flavor, poundsLeft, id } = newCoffee;
     return {
-        type: 'ADD_INVENTORY',
+        type: c.ADD_INVENTORY,
         name: name,
         origin: origin,
         price: price,
         roast: roast,
-        size: size,
         flavor: flavor,
         poundsLeft: poundsLeft,
         id: id

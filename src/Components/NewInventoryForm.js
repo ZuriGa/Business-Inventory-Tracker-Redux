@@ -7,14 +7,14 @@ function NewInventoryForm(props) {
 
     function handleNewInventoryFormSubmission(event) {
         event.preventDefault();
+        const quantityValue = parseInt(event.target.quantity.value) || 1;
         props.onNewInventoryCreation({
             name: event.target.name.value,
             origin: event.target.origin.value,
-            price: event.target.price.value,
+            price: parseInt(event.target.price.value),
             roast: event.target.roast.value,
-            size: event.target.size.value,
             flavor: event.target.flavor.value,
-            quantity: parseInt(event.target.quantity.value),
+            quantity: quantityValue * 130,
             id: v4()
 
         });

@@ -1,4 +1,5 @@
 import inventoryListReducer from '../../../reducers/inventory-list-reducer';
+import * as c from '../../../actions/ActionTypes';
 
 describe('inventoryListReducer', () => {
 
@@ -9,7 +10,6 @@ describe('inventoryListReducer', () => {
         origin: 'Costa Rica',
         price: '$17.00',
         roast: 'Light roast',
-        size: '1 lb',
         flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.',
         poundsLeft: 130,
         id: '1'
@@ -18,7 +18,6 @@ describe('inventoryListReducer', () => {
         origin: 'Guatemala',
         price: '$19.00',
         roast: 'Medium roast',
-        size: '1 lb',
         flavor: 'Our Organic House blend balances mild acidity, medium body, and walnut flavor notes in perfect harmony.',
         poundsLeft: 130,
         id: '2'
@@ -31,14 +30,13 @@ describe('inventoryListReducer', () => {
     });
 
     test('Should successfully add new coffee inventory to mainCoffeeList', () => {
-        const { name, origin, price, roast, size, flavor, poundsLeft, id } = currentState;
+        const { name, origin, price, roast, flavor, poundsLeft, id } = currentState;
         action = {
-            type: 'ADD_INVENTORY',
+            type: c.ADD_INVENTORY,
             name: name, 
             origin: origin,
             price: price,
             roast: roast,
-            size: size,
             flavor: flavor,
             poundsLeft: poundsLeft,
             id: id
@@ -49,7 +47,6 @@ describe('inventoryListReducer', () => {
                 origin: origin,
                 price: price,
                 roast: roast,
-                size: size,
                 flavor: flavor,
                 poundsLeft: poundsLeft,
                 id: id
@@ -59,7 +56,7 @@ describe('inventoryListReducer', () => {
 
     test('Should successfully delete an inventory item', () => {
         action = {
-            type: 'DELETE_INVENTORY',
+            type: c.DELETE_INVENTORY,
             id: 1
         };
         expect(inventoryListReducer(currentState, action)).toEqual({
@@ -68,7 +65,6 @@ describe('inventoryListReducer', () => {
                 origin: 'Guatemala',
                 price: '$19.00',
                 roast: 'Medium roast',
-                size: '1 lb',
                 flavor: 'Our Organic House blend balances mild acidity, medium body, and walnut flavor notes in perfect harmony.',
                 poundsLeft: 130,
                 id: '2'

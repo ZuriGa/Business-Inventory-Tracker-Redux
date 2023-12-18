@@ -1,0 +1,3 @@
+export const ADD_INVENTORY = 'ADD_INVENTORY';
+export const DELETE_INVENTORY = 'DELETE_INVENTORY';
+export const TOGGLE_FORM = 'TOGGLE_FORM';
