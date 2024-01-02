@@ -34,5 +34,25 @@ describe('Coffee inventory actions', () => {
             payload: coffeeData,
         })
     });
-    
+
+    it('editInventory should create EDIT_INVENTORY action', () => {
+        const coffeeData = {
+            name: 'Updated Coffee',
+            origin: 'Updated Origin',
+            price: '$20.00',
+            roast: 'Updated Roast',
+            flavor: 'Updated Flavor',
+            poundsLeft: 130,
+            id: '1'
+        };
+        const action = actions.editInventory(coffeeData.id, coffeeData);
+        expect(action).toEqual({
+            type: c.EDIT_INVENTORY,
+            payload: {
+                id: coffeeData.id,
+                updatedCoffee: coffeeData,
+            },
+        });
+    });
+
 });

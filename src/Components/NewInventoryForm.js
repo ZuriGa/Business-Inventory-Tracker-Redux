@@ -10,6 +10,7 @@ function NewInventoryForm(props) {
         event.preventDefault();
         const quantityValue = parseInt(event.target.quantity.value) || 1;
         props.onNewInventoryCreation({
+            type: 'ADD_INVENTORY',
             name: event.target.name.value,
             origin: event.target.origin.value,
             price: parseInt(event.target.price.value),

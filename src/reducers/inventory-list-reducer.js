@@ -7,22 +7,23 @@ const reducer = (state = initialState, action) => {
     switch (type) {
         case c.ADD_INVENTORY:
             const index = state.findIndex(coffee => coffee.id === payload.id);
-            
+
             if (index !== -1) {
-                const updatedState = [...state];
-                updatedState[index] = { ...updatedState[index], ...payload };
+                const updatedState = state.map(coffee =>
+                    coffee.id === payload.id ? { ...coffee, ...payload } : coffee
+                );
                 return updatedState;
             }
             return [
-                ...state, 
+                ...state,
                 payload,
             ];
 
         case c.DELETE_INVENTORY:
             return state.filter(coffee => coffee.id !== payload.id);
-        
+
         case c.EDIT_INVENTORY:
-            const editIndex = state.findIndex(coffee => coffee.id === payload.id);
+            const editIndex = state.findIndex(coffee => coffee.id === payload.editCoffee.id);
 
             if (editIndex !== -1) {
                 const editedState = [...state];

@@ -19,9 +19,11 @@ function InventoryDetails(props) {
     };
 
     const handleSellPound = () => {
-        if (coffee && coffee.poundsLeft > 0)
-    }
-
+        if (coffee && coffee.poundsLeft > 0) {
+            onSellPound();
+        }
+    };
+    
     return (
         <React.Fragment>
             {coffee && (
@@ -34,7 +36,7 @@ function InventoryDetails(props) {
                     <h3>Roast: {coffee.roast}</h3>
                     <h3>Quantity: {coffee.poundsLeft}</h3>
                     <h3><em>{coffee.flavor}</em></h3>
-                    <button onClick={handleSellCoffee} disabled={isOutOfStock}>Sell 1 lb</button>
+                    <button onClick={handleSellPound} disabled={isOutOfStock}>Sell 1 lb</button>
                     <button onClick={handleEditingCoffeeInList}>Update Coffee Details</button>
                     <button onClick={handleDeletingCoffee}>Delete Coffee</button>
                 </div>
