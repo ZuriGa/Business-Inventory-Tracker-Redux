@@ -1,11 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { v4 } from 'uuid';
 
 function ReusableForm(props) {
+    const formSubmissionHandler = (event) => {
+        event.preventDefault();
+
+        const formData = {
+            name: event.target.elements.name.value,
+            origin: event.target.elements.origin.value,
+            price: parseFloat(event.target.elements.price.value),
+            roast: event.target.elements.roast.value,
+            quantity: parseInt(event.target.elements.quantity.value),
+            flavor: event.target.elements.flavor.value,
+            id: v4(),
+        };
+
+        if (props.formSubmissionHandler) {
+            props.formSubmissionHandler(formData);
+        }
+    };
 
     return (
         <React.Fragment>
-            <form onSubmit={props.formSubmissionHandler}>
+            <form onSubmit={formSubmissionHandler}>
                 <label htmlFor='name'>Name: </label>
                 <input
                     type='text'

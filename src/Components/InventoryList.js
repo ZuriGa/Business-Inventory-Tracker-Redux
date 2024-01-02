@@ -2,15 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import coffeeImage from './../Img/coffee.png';
 
-function InventoryList(props) {
+const InventoryList = ({ inventoryList, onCoffeeSelection }) => {
     return(
         <React.Fragment>
-            {Array.isArray(props.inventoryList) && props.inventoryList.map((coffeeInventory) => (
-                <div key={coffeeInventory.id} id={coffeeInventory.id} onClick={() => props.onCoffeeSelection(coffeeInventory.id)}>
+            {Array.isArray(inventoryList) && inventoryList.map((coffeeInventory, index) => {
+                if (!coffeeInventory.id) {
+                    console.warn(`Item at index ${index} has an undefined or missing id.`);
+                }
+                return (
+                <div key={coffeeInventory.id || index} id={coffeeInventory.id} onClick={() => onCoffeeSelection(coffeeInventory.id)}>
                 <img src={coffeeImage} alt={'coffee bag'} style={{resizeMode: 'center', height: 250, width: 300, borderRadius: 20}} />
                 <h2>{coffeeInventory.name}</h2>
                 </div>
-            ))}
+                );
+})}
         </React.Fragment>
     );
 }

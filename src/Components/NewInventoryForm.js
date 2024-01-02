@@ -5,7 +5,8 @@ import ReusableForm from './ReusableForm';
 
 function NewInventoryForm(props) {
 
-    function handleNewInventoryFormSubmission(event) {
+    const handleNewInventoryFormSubmission = (event) => {
+        if (event && typeof event.preventDefault === 'function') {
         event.preventDefault();
         const quantityValue = parseInt(event.target.quantity.value) || 1;
         props.onNewInventoryCreation({
@@ -16,15 +17,15 @@ function NewInventoryForm(props) {
             flavor: event.target.flavor.value,
             quantity: quantityValue * 130,
             id: v4()
-
         });
+        console.log('Form submitted!');
     }
-
+};
     return(
         <React.Fragment>
             <ReusableForm
             formSubmissionHandler={handleNewInventoryFormSubmission}
-            buttonText='Add inventory' />
+            buttonText='Add Inventory' />
         </React.Fragment>
     );
 }

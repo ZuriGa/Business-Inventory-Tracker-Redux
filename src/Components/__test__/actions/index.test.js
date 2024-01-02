@@ -1,11 +1,14 @@
 import * as actions from './../../../actions';
 import * as c from '../../../actions/ActionTypes';
+import { act } from 'react-dom/test-utils';
 
 describe('Coffee inventory actions', () => {
     it('deleteInventory should create DELETE_INVENTORY action', () => {
-        expect(actions.deleteInventory(1)).toEqual({
+        const id = 1;
+        const action = actions.deleteInventory(id);
+        expect(action).toEqual({
             type: c.DELETE_INVENTORY,
-            id: 1
+            payload: { id },
         });
     });
 
@@ -16,7 +19,7 @@ describe('Coffee inventory actions', () => {
     });
 
     it('addInventory should create ADD_INVENTORY action', () => {
-        expect(actions.addInventory({
+        const coffeeData = {
             name: 'Light City',
             origin: 'Costa Rica',
             price: '$17.00',
@@ -24,16 +27,12 @@ describe('Coffee inventory actions', () => {
             flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.',
             poundsLeft: 130,
             id: '1'
-        })).toEqual({
+        };
+        const action = actions.addInventory(coffeeData);
+        expect(action).toEqual({
             type: c.ADD_INVENTORY,
-            name: 'Light City',
-            origin: 'Costa Rica',
-            price: '$17.00',
-            roast: 'Light roast',
-            flavor: 'Our Costa Rica coffee is a delicate showing with bright notes of bergamot and lemongrass.',
-            poundsLeft: 130,
-            id: '1'
-        });
+            payload: coffeeData,
+        })
     });
     
 });
